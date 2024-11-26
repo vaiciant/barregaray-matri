@@ -1,0 +1,40 @@
+body {
+    background-color: #FFFFFF;
+    color: #333333;
+    font-family: 'Arial', sans-serif;
+}
+
+header{
+    min-height: 105px;
+}
+
+/* Trick */
+main{
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background-color: #F8F8F8;
+    padding: 2rem;
+    text-align: center;
+}
+.header h1 {
+    color: #D4AF37;
+    font-family: 'Georgia', serif;
+}
+.form-container {
+    margin: 2rem auto;
+    padding: 2rem;
+    max-width: 600px;
+    background-color: #F8F8F8;
+    border: 1px solid #D4AF37;
+    border-radius: 8px;
+}
+.btn-submit {
+    background-color: #556B2F;
+    color: #FFFFFF;
+}
+.btn-submit:hover {
+    background-color: #6B8E23;
+}

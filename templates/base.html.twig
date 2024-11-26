@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Matrimonio Vicente Catalina{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <meta name="viewport" content="width=device-width, shrink-to-fit=yes, user-scalable=yes">
+        {% block stylesheets %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+            <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500&display=swap" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Hahmlet&family=Inter:wght@550&family=Lora&display=swap" rel="stylesheet">
+        {% endblock %}
+
+        {% block javascriptsHead %}
+        {% endblock %}
+    </head>
+    <body>
+        {% block nav %}
+            <header class="header">
+                <h1 style="margin-bottom: 0;">Comparte la felicidad de unir nuestras vidas en matrimonio</h1>
+            </header>
+        {% endblock %}
+        <main>
+            <div id="main_container" class="container-fluid" style="">
+                {% block body %}
+                {% endblock %}
+            </div>
+        </main>
+    </body>
+</html>

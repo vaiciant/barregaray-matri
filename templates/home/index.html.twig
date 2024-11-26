@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block body %}
+    <div class="col-12">
+        <div class="row">
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-10 col-12">
+                <div class="text-center ms-0 me-0 ms-md-5 me-md-5">
+                    <img class="" style="width: 100%;" src="{{ asset('images/nombres_logo.png') }}" alt="Catalina Etchegaray Molina y Vicente Barrenechea Reginato">
+                </div>
+            </div>
+            <div class="col-md-1">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center mt-4">
+                    <button class="btn btn-warning mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_formulario_asistencia" aria-expanded="false" aria-controls="collapse_formulario_asistencia">
+                        Ingresa confirmación de asistencia
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="collapse" id="collapse_formulario_asistencia">
+            <div class="form-container">
+                <form action="#" method="POST">
+                    <div class="mb-1">
+                        <label for="name" class="form-label">Nombre Completo</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Ingresa tu nombre" required>
+                    </div>
+                    <div class="mb-1">
+                        <label for="name" class="form-label">Correo</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Ingresa tu correo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Alergias y/o restricción alimentaria</label>
+                        <textarea id="name" name="name" class="form-control" placeholder=""></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                          <label class="form-check-label" for="flexSwitchCheckDefault">¿Con acompañante?</label>
+                        </div>
+                    </div>
+                    <div class="collapse" id="collapse_acompañante">
+                        <div class="mb-1">
+                            <label for="name" class="form-label">Nombre Completo Acompañante</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Ingresa nombre de acompañante" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="name" class="form-label">Alergias y/o restricción alimentaria Acompañante</label>
+                            <textarea id="name" name="name" class="form-control" placeholder=""></textarea>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <label for="guests" class="form-label">¿Con quien te quisieras sentar o cual es tu circulo social?</label>
+                        <textarea id="name" name="name" class="form-control" placeholder=""></textarea>
+                    </div>
+                    <div class="mt-5">
+                        <button type="submit" class="btn btn-outline-success btn-submit w-100">Confirmar Asistencia</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 text-center mt-5">
+        <button class="btn btn-success mt-2" type="button">
+            Fallabela novios
+        </button>
+    </div>
+    <div class="col-12">
+        <div class="text-center mt-2">
+            <p>
+                <b>Sábado 1 de marzo 2025, 17:00 hrs</b><br>
+                Casona San José de las Vertientes<br>
+                Los almendros 3689, San José de Maipo, Region Metropolitana
+            </p>
+            <div class="row mb-3">
+                <div class="col-md-3 col-1">
+                </div>
+                <div class="col-md-6 col-10">
+                    <div class="text-center ms-0 me-0 ms-md-5 me-md-5">
+                        <img class="" style="width: 100%;" src="{{ asset('images/mapa_casona.png') }}" alt="Catalina Etchegaray Molina y Vicente Barrenechea Reginato">
+                    </div>
+                </div>
+                <div class="col-md-3 col-1">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
