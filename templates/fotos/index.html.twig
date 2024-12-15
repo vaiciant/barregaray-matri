@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ver fotos y videos del matrimonio{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="card form-container p-4 mt-5">
+                <div class="text-center mt-1">
+                    <h2>Acá estarán las fotos y videos de nuestro matrimonio.</h2>
+                    <br>
+                    <h3>¡Esperando la fecha!</h3>
+                    <br>
+                    {{ ux_icon('ph:calendar-heart', {height: '32px', width: '32px', 'aria-hidden': true}) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+{% endblock %}

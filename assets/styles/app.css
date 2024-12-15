@@ -1,8 +1,24 @@
 body {
     background-color: #FFFFFF;
     color: #333333;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Georgia', serif;
 }
+
+main {
+    background: url('../images/top_left_backgroung.png') top left no-repeat,
+                url('../images/bottom_right_backgroung.png') bottom right no-repeat;
+    background-size: 500px 500px; /* Ajusta el tamaño según sea necesario */
+    margin: 0;
+    padding: 0;
+    min-height: calc(100vh - 176px);
+}
+
+@media only screen and (max-width: 767px) {
+    main {
+        background-size: 200px 200px; /* Ajusta el tamaño según sea necesario */
+    }
+}
+
 
 header{
     min-height: 105px;
@@ -23,13 +39,29 @@ main{
     color: #D4AF37;
     font-family: 'Georgia', serif;
 }
+h2 {
+    color: #D4AF37;
+    font-family: 'Georgia', serif;
+}
+h3 {
+    color: #D4AF37;
+    font-family: 'Georgia', serif;
+}
+h4 {
+    color: #D4AF37;
+    font-family: 'Georgia', serif;
+}
+h5 {
+    color: #D4AF37;
+    font-family: 'Georgia', serif;
+}
 .form-container {
-    margin: 2rem auto;
-    padding: 2rem;
-    max-width: 600px;
-    background-color: #F8F8F8;
-    border: 1px solid #D4AF37;
-    border-radius: 8px;
+    margin: 2rem auto !important;
+    padding: 2rem !important;
+    /* max-width: 600px; */
+    background-color: #F8F8F8 !important;
+    border: 1px solid #D4AF37 !important;
+    border-radius: 8px !important;
 }
 .btn-submit {
     background-color: #556B2F;

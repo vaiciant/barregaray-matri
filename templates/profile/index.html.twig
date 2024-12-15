@@ -1,0 +1,230 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenido a tu perfil{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="text-center mt-5">
+                <div class="card form-container p-4 mt-5">
+                    <h2>Acá puedes cambiar tu contraseña y pedir un cambio a tus datos del matrimonio.</h2>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            Correo: <b>{{ app.user.email }}</b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <button class="btn btn-primary mt-3" type="button" data-bs-toggle="modal" data-bs-target="#cambiar_contra_modal">
+                                Cambiar Contraseña {{ ux_icon('ph:password', {height: '16px', width: '16px', 'aria-hidden': true}) }}
+                            </button>
+                        </div>
+                        <div class="col-12 text-center">
+                            <button class="btn btn-warning mt-3" type="button" data-bs-toggle="modal" data-bs-target="#pedir_cambios_modal">
+                                Pedir Cambios {{ ux_icon('ph:list-magnifying-glass', {height: '16px', width: '16px', 'aria-hidden': true}) }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    {% if asistentes_tabla|length > 0 %}
+        <div class="row mt-3">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <h3>Tabla de asistentes</h3>
+                {% else %}
+                    <h3>Tu información</h3>
+                {% endif %}
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <th>Email</th>
+                            {% endif %}
+                            <th>Nombre</th>
+                            <th>Alimentos</th>
+                            <th>Preferencia Mesa</th>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <th></th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for asistente in asistentes_tabla %}
+                            <tr class="{% if is_granted('ROLE_ADMIN') %}{% if asistente.status == 'cambio' %}table-warning{% elseif asistente.status == 'confirmado' %}table-success{% elseif asistente.status == 'rechazado' %}table-danger{% endif %}{% endif %}">
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <td>{{ asistente.mail }}</td>
+                                {% endif %}
+                                <td>{{ asistente.nombre }}</td>
+                                <td>{{ asistente.alergias }}</td>
+                                <td>{{ asistente.mesa }}</td>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <td></td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block javascripts %}
+    <script type="module">
+        $( document ).ready(function() {
+            $(document).find("#form_cambiar_contra").on( "submit", function(e) {
+                e.preventDefault();
+                let url = $(this).attr('action');
+                let data = $(this).serialize();
+                var btn_confirmar_cambiar_contra = $("#btn_confirmar_cambiar_contra");
+                var btn_cerrar_cambiar_contra = $("#btn_cerrar_cambiar_contra");
+                var input_actual_password = $("#actual_password");
+                var input_new_password_1 = $("#new_password_1");
+                var input_new_password_2 = $("#new_password_2");
+                var msg_alerts_mala_contrasena = $("#msg_alerta_actual_error");
+                var msg_alerts_mala_doble_contra = $("#msg_alerta_doble_error");
+                var msg_alerts_ok = $("#msg_alerta_ok");
+                btn_confirmar_cambiar_contra.attr('disabled', 'disabled');
+                btn_confirmar_cambiar_contra.html('Guardando {{ ux_icon('fa6-solid:spinner', {height: '16px', width: '16px', 'class': 'fa-pulse'}) }}');
+                $.ajax({
+                    url: url,
+                    data: data,
+                    type: 'POST',
+                    cache: false,
+                    success: function (resp) {
+                        if (resp.status) {
+                            setTimeout(function() {
+                                msg_alerts_ok.fadeIn();
+                                setTimeout(function() {
+                                    btn_cerrar_cambiar_contra.click();
+                                    input_actual_password.val('');
+                                    input_new_password_1.val('');
+                                    input_new_password_2.val('');
+                                    btn_confirmar_cambiar_contra.prop('disabled', false);
+                                    btn_confirmar_cambiar_contra.html('Cambiar contraseña {{ ux_icon('carbon:password', {height: '16px', width: '16px', 'aria-hidden': true}) }}');
+                                    msg_alerts_ok.hide();
+                                    msg_alerts_mala_doble_contra.hide();
+                                    msg_alerts_mala_contrasena.hide();
+                                }, 5000);
+                            }, 500);
+                        } else {
+                            input_actual_password.val('');
+                            input_new_password_1.val('');
+                            input_new_password_2.val('');
+                            btn_confirmar_cambiar_contra.prop('disabled', false);
+                            btn_confirmar_cambiar_contra.html('Cambiar contraseña {{ ux_icon('carbon:password', {height: '16px', width: '16px', 'aria-hidden': true}) }}');
+                            msg_alerts_mala_contrasena.fadeIn();
+                            setTimeout(function() {
+                                msg_alerts_mala_contrasena.fadeOut();
+                            }, 5000);
+                        }
+                    },
+                    error: function (xhr, status) {
+                        console.error('Error al guardar cambios');
+                    },
+                });
+            });
+            $(document).find("#form_modificacion").on( "submit", function(e) {
+                e.preventDefault();
+                let url = $(this).attr('action');
+                let data = $(this).serialize();
+                var btn_confirmar_mod = $("#btn_confirmar_mod");
+                var btn_texto_mod = $("#modificacion");
+                var btn_cerrar_mod = $("#btn_cerrar_modi");
+                btn_confirmar_mod.attr('disabled', 'disabled');
+                btn_confirmar_mod.html('Guardando {{ ux_icon('fa6-solid:spinner', {height: '16px', width: '16px', 'class': 'fa-pulse'}) }}');
+                $.ajax({
+                    url: url,
+                    data: data,
+                    type: 'POST',
+                    cache: false,
+                    success: function (resp) {
+                        setTimeout(function () {
+                            btn_cerrar_mod.click();
+                            setTimeout(function () {
+                                btn_texto_mod.val('');
+                                btn_confirmar_mod.prop('disabled', false);
+                                btn_confirmar_mod.html('Pedir cambios {{ ux_icon('ph:list-star', {height: '16px', width: '16px', 'aria-hidden': true}) }}');
+                            }, 100);
+                        }, 500);
+                    },
+                    error: function (xhr, status) {
+                        console.error('Error al guardar cambios');
+                    },
+                });
+            });
+        });
+    </script>
+{% endblock %}
+{% block modals %}
+    <div class="modal fade" id="cambiar_contra_modal" tabindex="-1" aria-labelledby="cambiar_contra_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="cambiar_contra_modal_label">Cambiar contraseña</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="btn_cerrar_cambiar_contra"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form_cambiar_contra" action="{{ path('app_ajax_cambiar_contrasena') }}" method="POST">
+                        <div id="msg_alerta_actual_error" style="display: none;">
+                            <div class="alert alert-danger text-center">
+                                Las contraseñas no coinciden.
+                            </div>
+                        </div>
+                        <div id="msg_alerta_doble_error" style="display: none;">
+                            <div class="alert alert-danger text-center">
+                                Las contraseñas no coinciden.
+                            </div>
+                        </div>
+                        <div id="msg_alerta_ok" style="display: none;">
+                            <div class="alert alert-success text-center">
+                                ¡Se cambió la contraseña exitosamente!
+                            </div>
+                        </div>
+                        {% if app.user.tempPass == 0 %}
+                            <label for="actual_password">Contraseña actual</label>
+                            <input type="password" name="actual_password" id="actual_password" class="form-control" autocomplete="current-password" required>
+                        {% endif %}
+                        <label for="new_password_1">Nueva contraseña</label>
+                        <input type="password" name="new_password_1" id="new_password_1" class="form-control" autocomplete="new-password" placeholder="Nueva contraseña" required>
+                        <input type="password" name="new_password_2" id="new_password_2" class="form-control" autocomplete="new-2-password" placeholder="Repite la nueva contraseña" required>
+                        <div class="mt-2">
+                            <button type="submit" class="btn btn-success btn-submit w-100" id="btn_confirmar_cambiar_contra">
+                                Cambiar contraseña {{ ux_icon('carbon:password', {height: '16px', width: '16px', 'aria-hidden': true}) }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="pedir_cambios_modal" tabindex="-1" aria-labelledby="pedir_cambios_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="pedir_cambios_modal_label">Pedir un cambio</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="btn_cerrar_modi"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form_modificacion" action="{{ path('app_profile_pedir_cambio') }}" method="POST">
+                        <div class="mb-2">
+                            <label for="modificacion" class="form-label">Si necesitas algún cambio, escribe aquí.</label>
+                            <textarea id="modificacion" name="modificacion" class="form-control" placeholder="Escribe tu cambio alimenticio o de asistencia" required></textarea>
+                        </div>
+                        <div class="">
+                            <button type="submit" class="btn btn-success btn-submit w-100" id="btn_confirmar_mod">
+                                Pedir cambios {{ ux_icon('ph:list-star', {height: '16px', width: '16px', 'aria-hidden': true}) }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

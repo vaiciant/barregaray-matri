@@ -1,94 +1,278 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Bienvenidos a nuestro portal de matrimonio{% endblock %}
 
 {% block body %}
     <div class="col-12">
-        <div class="row">
-            <div class="col-md-1">
+        <div class="row mt-5">
+            <div class="col-md-1 col-lg-2">
             </div>
-            <div class="col-md-10 col-12">
-                <div class="text-center ms-0 me-0 ms-md-5 me-md-5">
-                    <img class="" style="width: 100%;" src="{{ asset('images/nombres_logo.png') }}" alt="Catalina Etchegaray Molina y Vicente Barrenechea Reginato">
+            <div class="col-md-10 col-lg-8 col-12 mt-5">
+                <div class="text-center ms-0 me-0 ms-md-5 me-md-5 mt-5">
+                    <img class="" style="width: 100%;" src="{{ asset('images/nombres_logo_tra.png') }}" alt="Catalina Etchegaray Molina y Vicente Barrenechea Reginato">
                 </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-1 col-lg-2">
             </div>
         </div>
-        <div class="row">
+        <div class="row" id="row_btn_confirmar_asistencia" style="">
             <div class="col-12">
                 <div class="text-center mt-4">
-                    <button class="btn btn-warning mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_formulario_asistencia" aria-expanded="false" aria-controls="collapse_formulario_asistencia">
-                        Ingresa confirmación de asistencia
-                    </button>
+                    {% if app.user %}
+                        <h4>Ya ingresaste tu confirmación<br>¡Te esperamos!</h4>
+                        <div class="col-12 text-center">
+                            <button class="btn btn-warning mt-3" type="button" data-bs-toggle="modal" data-bs-target="#pedir_cambios_modal">
+                                Pedir Cambios {{ ux_icon('ph:list-magnifying-glass', {height: '16px', width: '16px', 'aria-hidden': true}) }}
+                            </button>
+                        </div>
+                    {% else %}
+                        <button class="btn btn-md-lg btn-warning mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_formulario_asistencia" aria-expanded="false" aria-controls="collapse_formulario_asistencia">
+                            Confirma tu asistencia aquí {{ ux_icon('ph:list-checks', {height: '24px', width: '24px', 'aria-hidden': true}) }}
+                        </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-12">
-        <div class="collapse" id="collapse_formulario_asistencia">
-            <div class="form-container">
-                <form action="#" method="POST">
-                    <div class="mb-1">
-                        <label for="name" class="form-label">Nombre Completo</label>
-                        <input type="text" id="name" name="name" class="form-control" placeholder="Ingresa tu nombre" required>
-                    </div>
-                    <div class="mb-1">
-                        <label for="name" class="form-label">Correo</label>
-                        <input type="text" id="name" name="name" class="form-control" placeholder="Ingresa tu correo" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Alergias y/o restricción alimentaria</label>
-                        <textarea id="name" name="name" class="form-control" placeholder=""></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                          <label class="form-check-label" for="flexSwitchCheckDefault">¿Con acompañante?</label>
-                        </div>
-                    </div>
-                    <div class="collapse" id="collapse_acompañante">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-8 col-12">
+            <div class="collapse" id="collapse_formulario_asistencia" style="{% if app.user %}display: none;{% endif %}">
+                <div class="form-container mb-0">
+                    <form id="form_asistencia" action="{{ path('app_home_guardar_asistente') }}" method="POST">
                         <div class="mb-1">
-                            <label for="name" class="form-label">Nombre Completo Acompañante</label>
-                            <input type="text" id="name" name="name" class="form-control" placeholder="Ingresa nombre de acompañante" required>
+                            <label for="name" class="form-label">Nombre Completo</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Ingresa tu nombre" required>
                         </div>
                         <div class="mb-1">
-                            <label for="name" class="form-label">Alergias y/o restricción alimentaria Acompañante</label>
-                            <textarea id="name" name="name" class="form-control" placeholder=""></textarea>
+                            <label for="email" class="form-label">Correo</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Ingresa tu correo" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="alergias" class="form-label">Alergias y/o restricción alimentaria</label>
+                            <textarea id="alergias" name="alergias" class="form-control" placeholder=""></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" name="switch_acompanante" id="switch_acompanante">
+                              <label class="form-check-label" for="switch_acompanante">¿Con acompañante?</label>
+                            </div>
+                        </div>
+                        <div class="collapse" id="collapse_acompanante">
+                            <div class="mb-1">
+                                <label for="nombre_completo_acompanante" class="form-label">Nombre Completo Acompañante</label>
+                                <input type="text" id="nombre_completo_acompanante" name="nombre_completo_acompanante" class="form-control" placeholder="Ingresa nombre de acompañante">
+                            </div>
+                            <div class="mb-1">
+                                <label for="alergias_acompanante" class="form-label">Alergias y/o restricción alimentaria Acompañante</label>
+                                <textarea id="alergias_acompanante" name="alergias_acompanante" class="form-control" placeholder=""></textarea>
+                            </div>
+                        </div>
+                        <div class="mb-1">
+                            <label for="mesa" class="form-label">¿Con quien te quisieras sentar o cual es tu circulo social?</label>
+                            <textarea id="mesa" name="mesa" class="form-control" placeholder=""></textarea>
+                        </div>
+                        <div class="mt-5">
+                            <button type="submit" class="btn btn-outline-success btn-submit w-100" id="btn_confirmar_asistencia">
+                                Confirmar Asistencia {{ ux_icon('ph:check-circle', {height: '16px', width: '16px', 'aria-hidden': true}) }}
+                            </button>
+                        </div>
+                    </form>
+                    <div id="loading_confirmacion" class="text-center" style="display: none;">
+                        {{ ux_icon('fa6-solid:spinner', {height: '32px', width: '32px', 'class': 'fa-pulse'}) }}
                     </div>
-                    <div class="mb-1">
-                        <label for="guests" class="form-label">¿Con quien te quisieras sentar o cual es tu circulo social?</label>
-                        <textarea id="name" name="name" class="form-control" placeholder=""></textarea>
+                    <div id="mensaje_confirmacion" class="text-center" style="display: none;">
+                        {{ ux_icon('fluent-mdl2:waitlist-confirm', {height: '32px', width: '32px', 'aria-hidden': true}) }}
+                        <h3 class="mt-2">¡Confirmado!</h3>
+                        <h3 class="mt-2">¡Te esperamos en nuestro matrimonio!</h3>
+                        <div id="pass_usuario"></div>
+                        <a class="btn btn-link" href="{{ path('app_login') }}">Iniciar Sesión</a>
                     </div>
-                    <div class="mt-5">
-                        <button type="submit" class="btn btn-outline-success btn-submit w-100">Confirmar Asistencia</button>
-                    </div>
-                </form>
+                </div>
             </div>
+        </div>
+        <div class="col-md-2">
         </div>
     </div>
     <div class="col-12 text-center mt-5">
-        <button class="btn btn-success mt-2" type="button">
-            Fallabela novios
-        </button>
+        <h4>Puedes seleccionar</h4>
+    </div>
+    <div class="col-12 text-center">
+        <a class="btn btn-success mt-3 mb-3" type="button" target="_blank" href="https://www.noviosfalabella.com/public/resultadoBusquedaNovios.do?categoria=todas&idsJerarquias=&nombreCategoria=&nivelCategoria=&codigoEvento=&dvEvento=&radTipoBusqueda=1&txtBusqueda=989266-04">
+            {{ ux_icon('ph:gift', {height: '16px', width: '16px', 'aria-hidden': true}) }} Falabella novios {{ ux_icon('ph:gift', {height: '16px', width: '16px', 'aria-hidden': true}) }}
+        </a>
+    </div>
+    <div class="col-12 text-center">
+        <h5>Ó</h5>
+    </div>
+    <div class="col-12 text-center">
+        <a class="btn btn-success" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transferencia_modal">
+            {{ ux_icon('ph:credit-card', {height: '16px', width: '16px', 'aria-hidden': true}) }} Transferencia {{ ux_icon('ph:credit-card', {height: '16px', width: '16px', 'aria-hidden': true}) }}
+        </a>
     </div>
     <div class="col-12">
-        <div class="text-center mt-2">
+        <div class="text-center mt-3">
+            <h2>
+                <b>Sábado 1 de marzo 2025<br> 17:00 hrs</b><br>
+            </h2>
+            <h3>Casona San José de las Vertientes</h3>
             <p>
-                <b>Sábado 1 de marzo 2025, 17:00 hrs</b><br>
-                Casona San José de las Vertientes<br>
                 Los almendros 3689, San José de Maipo, Region Metropolitana
             </p>
             <div class="row mb-3">
                 <div class="col-md-3 col-1">
                 </div>
                 <div class="col-md-6 col-10">
-                    <div class="text-center ms-0 me-0 ms-md-5 me-md-5">
-                        <img class="" style="width: 100%;" src="{{ asset('images/mapa_casona.png') }}" alt="Catalina Etchegaray Molina y Vicente Barrenechea Reginato">
+                    <div class="card" style="border: 1px solid #D4AF37;">
+                        <div class="text-center ms-0 me-0">
+                            <a target="_blank" href="https://maps.app.goo.gl/xmoLY2t4FXoj4CLM6">
+                                <img class="" style="width: 100%;" src="{{ asset('images/mapa_casona.png') }}" alt="Catalina Etchegaray Molina y Vicente Barrenechea Reginato">
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-1">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="module">
+        $( document ).ready(function() {
+            const collapse_acompanante_ele = document.getElementById('collapse_acompanante')
+            var collapse_acompanante = new bootstrap.Collapse(
+                collapse_acompanante_ele, {
+                    toggle: false
+            });
+
+            var checkbox = document.getElementById('switch_acompanante')
+
+            checkbox.addEventListener('change', function () {
+                checker(this.checked)
+            })
+
+            function checker(checked) {
+                var nombre_completo_acompanante = $("#nombre_completo_acompanante");
+                collapse_acompanante.toggle();
+                nombre_completo_acompanante.prop('required', checked);
+            }
+
+            $(document).find("#form_modificacion").on( "submit", function(e) {
+                e.preventDefault();
+                let url = $(this).attr('action');
+                let data = $(this).serialize();
+                var btn_confirmar_mod = $("#btn_confirmar_mod");
+                var btn_texto_mod = $("#modificacion");
+                var btn_cerrar_mod = $("#btn_cerrar_mod");
+                btn_confirmar_mod.attr('disabled', 'disabled');
+                btn_confirmar_mod.html('Guardando {{ ux_icon('fa6-solid:spinner', {height: '16px', width: '16px', 'class': 'fa-pulse'}) }}');
+                $.ajax({
+                    url: url,
+                    data: data,
+                    type: 'POST',
+                    cache: false,
+                    success: function (resp) {
+                        setTimeout(function() {
+                            btn_cerrar_mod.click();
+                            setTimeout(function() {
+                                btn_texto_mod.val('');
+                                btn_confirmar_mod.prop('disabled', false);
+                                btn_confirmar_mod.html('Pedir cambios {{ ux_icon('ph:list-star', {height: '16px', width: '16px', 'aria-hidden': true}) }}');
+                            }, 100);
+                        }, 500);
+                    },
+                    error: function (xhr, status) {
+                        console.error('Error al guardar cambios');
+                    },
+                });
+            });
+
+            $(document).find("#form_asistencia").on( "submit", function(e) {
+                e.preventDefault();
+                var btn_confirmar_asistencia = $("#btn_confirmar_asistencia");
+                btn_confirmar_asistencia.attr('disabled', 'disabled');
+                btn_confirmar_asistencia.html('Guardando {{ ux_icon('fa6-solid:spinner', {height: '16px', width: '16px', 'class': 'fa-pulse'}) }}');
+                var loading_confirmacion = $("#loading_confirmacion");
+                var mensaje_confirmacion = $("#mensaje_confirmacion");
+                loading_confirmacion.show();
+                $(this).hide();
+                let url = $(this).attr('action');
+                let data = $(this).serialize();
+                $.ajax({
+                    url: url,
+                    data: data,
+                    type: 'POST',
+                    cache: false,
+                    success: function (resp) {
+                        if (resp.status) {
+                            var row_btn_confirmar_asistencia = $("#row_btn_confirmar_asistencia");
+                            row_btn_confirmar_asistencia.hide();
+                            setTimeout(function() {
+                                loading_confirmacion.hide();
+                                mensaje_confirmacion.show();
+                                var pass_usuario = $("#pass_usuario");
+                                pass_usuario.html('Esta es tu contraseña temporal: '+resp.pass);
+                            }, 500);
+                        }
+                    },
+                    error: function (xhr, status) {
+                        console.error('Error al guardar confirmación');
+                    },
+                });
+            });
+        });
+    </script>
+{% endblock %}
+{% block modals %}
+    <div class="modal fade" id="transferencia_modal" tabindex="-1" aria-labelledby="transferencia_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="transferencia_modal_label">Datos de Transferencia</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            Banco: <b>BCI</b>
+                            <br>
+                            Tipo Cuenta: <b>Cuenta Corriente</b>
+                            <br>
+                            Nombre: <b>Catalina Etchegaray</b>
+                            <br>
+                            Rut: <b>17.476.953-2</b>
+                            <br>
+                            Numero Cuenta: <b>95765255</b>
+                            <br>
+                            Correo: <b>catalina.etchegaray@mail.udp.cl</b>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="pedir_cambios_modal" tabindex="-1" aria-labelledby="pedir_cambios_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="pedir_cambios_modal_label">Pedir un cambio</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="btn_cerrar_mod"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form_modificacion" action="{{ path('app_profile_pedir_cambio') }}" method="POST">
+                        <div class="mb-2">
+                            <label for="modificacion" class="form-label">Si necesitas algún cambio, escribe aquí.</label>
+                            <textarea id="modificacion" name="modificacion" class="form-control" placeholder="Escribe tu cambio alimenticio o de asistencia" required></textarea>
+                        </div>
+                        <div class="">
+                            <button type="submit" class="btn btn-success btn-submit w-100" id="btn_confirmar_mod">
+                                Pedir cambios {{ ux_icon('ph:list-star', {height: '16px', width: '16px', 'aria-hidden': true}) }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

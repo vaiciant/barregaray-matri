@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Olvido de contraseña{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div id="msg_olvido_contra" style="display: none;">
+                <div class="alert alert-primary mt-2 text-center">
+                    Si el correo existe en nuestros sistemas se enviara un correo con la nueva contraseña.
+                </div>
+            </div>
+            {% if app.user %}
+                <div class="mt-2">
+                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="card form-container p-4 mt-5">
+                <form method="post" id="form_olvido_contra" action="{{ path('app_ajax_olvido_cotrasena') }}">
+                    <h1 class="h2 mb-3 font-weight-normal text-center">Resetear contraseña</h1>
+                    <label for="username">Email</label>
+                    <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
+                    <div class="mt-2">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-lg btn-primary" type="submit" id="btn_olvido_contra">
+                                Mandar nueva contraseña {{ ux_icon('mdi:email-fast-outline', {height: '16px', width: '16px', 'aria-hidden': true}) }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div class="mt-2 text-center">
+                    <a class="btn btn-link" href="{{ path('app_login') }}">¿Tienes cuenta? Inicia sesión</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="module">
+        $( document ).ready(function() {
+            $(document).find("#form_olvido_contra").on( "submit", function(e) {
+                e.preventDefault();
+                console.log('olvido');
+                let url = $(this).attr('action');
+                let data = $(this).serialize();
+                var btn_confirmar_olvido = $("#btn_olvido_contra");
+                var msg_olvido_contra = $("#msg_olvido_contra");
+                btn_confirmar_olvido.attr('disabled', 'disabled');
+                btn_confirmar_olvido.html('Enviando {{ ux_icon('fa6-solid:spinner', {height: '16px', width: '16px', 'class': 'fa-pulse'}) }}');
+                $.ajax({
+                    url: url,
+                    data: data,
+                    type: 'POST',
+                    cache: false,
+                    success: function (resp) {
+                        setTimeout(function() {
+                            console.log(resp);
+                            msg_olvido_contra.fadeIn();
+                            btn_confirmar_olvido.prop('disabled', false);
+                            btn_confirmar_olvido.html('Mandar nueva contraseña {{ ux_icon('mdi:email-fast-outline', {height: '16px', width: '16px', 'aria-hidden': true}) }}');
+                            setTimeout(function() {
+                                msg_olvido_contra.fadeOut();
+                            }, 10000);
+                        }, 500);
+                    },
+                    error: function (xhr, status) {
+                        console.error('Error al enviar contraseña');
+                    },
+                });
+            });
+        });
+    </script>
+{% endblock %}
